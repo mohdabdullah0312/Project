@@ -1,5 +1,17 @@
 import subprocess
 import os
+import sys
+from os import system as sy
+
+if getattr(sys, 'frozen', False):
+    base_path = sys._MEIPASS  # PyInstaller extracted temp directory
+else:
+    base_path = os.path.dirname(os.path.abspath(__file__))  # Normal script location
+
+req_file = os.path.join(base_path, "requirements.txt")
+
+# Modify only this line to use the correct path
+sy(f"pip install -r \"{req_file}\"") if os.path.exists(req_file) else print("Error: requirements.txt not found!")
 
 def install_requirements():
     """Install dependencies from requirements.txt, continuing even if some fail."""
