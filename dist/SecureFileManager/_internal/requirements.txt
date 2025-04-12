@@ -1,6 +1,0 @@
-tkinter
-ecdsa
-hashlib
-crypto
-paramiko
-pyperclip
