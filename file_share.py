@@ -176,6 +176,9 @@ class SimpleSSHServer(ServerInterface):
         if kind == 'session':
             return OPEN_SUCCEEDED
         return paramiko.OPEN_FAILED_ADMINISTRATIVELY_PROHIBITED
+    
+    def check_channel_pty_request(self, channel, term, width, height, pixwidth, pixheight, modes):
+        return True  # Allow PTY requests
 
     def check_channel_shell_request(self, channel):
         return True
