@@ -2,6 +2,14 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog
 import paramiko
 import pyperclip
+import threading
+import socket
+import os
+from paramiko import ServerInterface, AUTH_SUCCESSFUL, OPEN_SUCCEEDED
+import getpass
+import secrets
+import string
+
 
 def ssh_connect(host, port, username, password):
     ssh = paramiko.SSHClient()
@@ -150,5 +158,86 @@ log_box.grid(row=8, column=0, columnspan=2, pady=(0, 10), sticky='nsew')
 # Make log box expand with window
 frame.grid_rowconfigure(8, weight=1)
 frame.grid_columnconfigure(1, weight=1)
+
+username = getpass.getuser()
+password = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(10))
+
+class SimpleSSHServer(ServerInterface):
+    def __init__(self, authorized_user, authorized_password):
+        self.authorized_user = authorized_user
+        self.authorized_password = authorized_password
+
+    def check_auth_password(self, username, password):
+        if username == self.authorized_user and password == self.authorized_password:
+            return AUTH_SUCCESSFUL
+        return paramiko.AUTH_FAILED
+
+    def check_channel_request(self, kind, chanid):
+        if kind == 'session':
+            return OPEN_SUCCEEDED
+        return paramiko.OPEN_FAILED_ADMINISTRATIVELY_PROHIBITED
+
+    def check_channel_shell_request(self, channel):
+        return True
+
+def start_ssh_server():
+    port = 2222
+
+    try:
+        host_key = paramiko.RSAKey.generate(2048)
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        server_socket.bind(('', port))
+        server_socket.listen(100)
+
+        hostname = socket.gethostname()
+        ip = socket.gethostbyname(hostname)
+
+        print(f"🚀 SSH server running!")
+        print(f"🖥️ Hostname/IP: {ip}")
+        print(f"👤 Username: {username}")
+        print(f"🔐 Password: {password}")
+        print(f"📡 Port: {port}")
+        print("🛠️ You can now connect to this device using the GUI from another computer.")
+        log(f"🚀 SSH server started on {ip}:{port}")
+        log(f"👤 Username: {username}")
+        log(f"🔐 Password: {password}")
+        log("🛠️ Ready to accept connections from other devices.")
+
+
+        def handle_client(client_socket):
+            transport = paramiko.Transport(client_socket)
+            transport.add_server_key(host_key)
+            server = SimpleSSHServer(username, password)
+            try:
+                transport.start_server(server=server)
+                channel = transport.accept(20)
+                if channel is None:
+                    return
+                while True:
+                    data = channel.recv(1024)
+                    if not data:
+                        break
+                    # Echo back the command (simple handling)
+                    response = f"Echo: {data.decode()}"
+                    channel.send(response.encode())
+                channel.close()
+            except Exception as e:
+                print(f"⚠️ SSH server error: {e}")
+            finally:
+                transport.close()
+
+        def server_loop():
+            while True:
+                client, _ = server_socket.accept()
+                threading.Thread(target=handle_client, args=(client,), daemon=True).start()
+
+        threading.Thread(target=server_loop, daemon=True).start()
+
+    except Exception as e:
+        print(f"❌ Failed to start SSH server: {e}")
+
+# Start the SSH server in background
+start_ssh_server()
 
 root.mainloop()
