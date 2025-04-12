@@ -21,7 +21,16 @@ a = Analysis(
     datas=datas,  # Include external files (e.g., requirements.txt)
 )
 
-# Pack everything
+# Pack everything with icon
 pyz = PYZ(a.pure)
-exe = EXE(pyz, a.scripts, a.binaries, a.zipfiles, a.datas, name="SecureFileManager", debug=False)
+exe = EXE(
+    pyz,
+    a.scripts,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    name="SecureFileManager",
+    debug=False,
+    icon="icon.ico"  
+)
 coll = COLLECT(exe, a.datas, a.binaries, strip=False, upx=True, name="SecureFileManager")
