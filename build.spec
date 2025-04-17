@@ -1,8 +1,10 @@
-# PyInstaller Build Specification File
+# securefilemanager.spec
+
+import os
 from PyInstaller.utils.hooks import collect_submodules
 from PyInstaller.building.build_main import Analysis, PYZ, EXE, COLLECT
 
-# List all hidden imports (modules used dynamically)
+# Hidden imports for dynamic modules
 hidden_imports = collect_submodules("your_project_folder") + [
     "ecdh_key_ex",
     "enc_dec",
@@ -10,27 +12,38 @@ hidden_imports = collect_submodules("your_project_folder") + [
     "requirements_installer"
 ]
 
-# Explicitly include `requirements.txt`
+# Include extra files
 datas = [("requirements.txt", ".")]
 
-# Analysis step: Collects everything needed for packaging
+# Full path to ensure consistent builds
+project_path = os.path.abspath(".")
+
 a = Analysis(
-    ["main.py"],  # Main script
-    pathex=["."],  # Search path
-    hiddenimports=hidden_imports,  # Include dynamically loaded modules
-    datas=datas,  # Include external files (e.g., requirements.txt)
+    ["main.py"],
+    pathex=[project_path],
+    hiddenimports=hidden_imports,
+    datas=datas
 )
 
-# Pack everything with icon
 pyz = PYZ(a.pure)
+
 exe = EXE(
     pyz,
     a.scripts,
     a.binaries,
     a.zipfiles,
     a.datas,
-    name="SecureFileManager",
+    name="SecureFileManager.bin",
     debug=False,
-    icon="icon.ico"  
+    console=True  # Set to False if GUI app
 )
-coll = COLLECT(exe, a.datas, a.binaries, strip=False, upx=True, name="SecureFileManager")
+
+coll = COLLECT(
+    exe,
+    binaries=a.binaries,
+    zipfiles=a.zipfiles,
+    datas=a.datas,
+    strip=True,
+    upx=True, 
+    name="SecureFileManager"
+)
