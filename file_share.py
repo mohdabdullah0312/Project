@@ -4,7 +4,6 @@ import paramiko
 import pyperclip
 import threading
 import socket
-import os
 from paramiko import ServerInterface, AUTH_SUCCESSFUL, OPEN_SUCCEEDED
 import getpass
 import secrets
@@ -217,18 +216,26 @@ def start_ssh_server():
                 channel = transport.accept(20)
                 if channel is None:
                     return
+
+                # Send welcome message
+                channel.send(channel.send("\n✅ Connected to IoT SSH Server!\nType something and press Enter:\n".encode())
+)
+
+                # Keep the channel open and echo messages
                 while True:
                     data = channel.recv(1024)
                     if not data:
                         break
-                    # Echo back the command (simple handling)
-                    response = f"Echo: {data.decode()}"
+                    message = data.decode().strip()
+                    response = f"Echo: {message}\n"
                     channel.send(response.encode())
+
                 channel.close()
             except Exception as e:
                 print(f"⚠️ SSH server error: {e}")
             finally:
                 transport.close()
+
 
         def server_loop():
             while True:

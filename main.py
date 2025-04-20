@@ -1,4 +1,27 @@
+import os
+import sys
+import subprocess
 import tkinter as tk
+
+def launch_in_terminal():
+    script_path = os.path.abspath(sys.argv[0])
+    command = f'"{script_path}" --in-terminal'
+    
+    # Try launching in gnome-terminal first
+    terminal_cmd = ["gnome-terminal", "--", "bash", "-c", f"{command}; exec bash"]
+    
+    # Fallback to lxterminal if GNOME isn't available
+    if not subprocess.call(["which", "gnome-terminal"], stdout=subprocess.PIPE, stderr=subprocess.PIPE):
+        subprocess.Popen(terminal_cmd)
+    else:
+        # If gnome-terminal is not found, try lxterminal
+        terminal_cmd = ["lxterminal", "-e", f"bash -c '{command}; exec bash'"]
+        subprocess.Popen(terminal_cmd)
+
+# Only launch terminal on Linux and not already inside one
+if sys.platform.startswith("linux") and "--in-terminal" not in sys.argv:
+    launch_in_terminal()
+    sys.exit(0)
 
 # Setup main window
 root = tk.Tk()
