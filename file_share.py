@@ -9,6 +9,15 @@ import getpass
 import secrets
 import string
 
+def get_local_ip():
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return "127.0.0.1"
 
 def ssh_connect(host, port, username, password):
     ssh = paramiko.SSHClient()
@@ -116,7 +125,6 @@ frame.pack(fill=tk.BOTH, expand=True)
 entry_width = 30
 label_opts = {'bg': '#f0f0f0', 'anchor': 'e', 'padx': 5, 'pady': 5}
 
-# Input Fields
 tk.Label(frame, text="Hostname/IP:", **label_opts).grid(row=0, column=0, sticky='e')
 host_entry = tk.Entry(frame, width=entry_width)
 host_entry.grid(row=0, column=1, sticky='w')
@@ -134,27 +142,24 @@ tk.Label(frame, text="Password:", **label_opts).grid(row=3, column=0, sticky='e'
 pass_entry = tk.Entry(frame, show="*", width=entry_width)
 pass_entry.grid(row=3, column=1, sticky='w')
 
-# Buttons
 connect_btn = tk.Button(frame, text="🔌 Connect", width=entry_width + 6, command=connect_ssh, bg="#4CAF50", fg="white")
 connect_btn.grid(row=4, column=0, columnspan=2, pady=(10, 5))
 
-upload_btn = tk.Button(frame, text="⬆️ Upload File", width=20, command=upload_file)
+upload_btn = tk.Button(frame, text="⬆ Upload File", width=20, command=upload_file)
 upload_btn.grid(row=5, column=0, pady=5)
 
-download_btn = tk.Button(frame, text="⬇️ Download File", width=20, command=download_file)
+download_btn = tk.Button(frame, text="⬇ Download File", width=20, command=download_file)
 download_btn.grid(row=5, column=1, pady=5)
 
 clipboard_btn = tk.Button(frame, text="📋 Share Clipboard", width=entry_width + 6, command=share_clipboard)
 clipboard_btn.grid(row=6, column=0, columnspan=2, pady=10)
 
-# Log Box
 log_label = tk.Label(frame, text="Logs:", **label_opts)
 log_label.grid(row=7, column=0, columnspan=2, sticky='w', pady=(10, 0))
 
 log_box = tk.Text(frame, height=10, state=tk.DISABLED, bg="#ffffff", relief=tk.SUNKEN, bd=1)
 log_box.grid(row=8, column=0, columnspan=2, pady=(0, 10), sticky='nsew')
 
-# Make log box expand with window
 frame.grid_rowconfigure(8, weight=1)
 frame.grid_columnconfigure(1, weight=1)
 
@@ -175,9 +180,9 @@ class SimpleSSHServer(ServerInterface):
         if kind == 'session':
             return OPEN_SUCCEEDED
         return paramiko.OPEN_FAILED_ADMINISTRATIVELY_PROHIBITED
-    
+
     def check_channel_pty_request(self, channel, term, width, height, pixwidth, pixheight, modes):
-        return True  # Allow PTY requests
+        return True
 
     def check_channel_shell_request(self, channel):
         return True
@@ -192,20 +197,18 @@ def start_ssh_server():
         server_socket.bind(('', port))
         server_socket.listen(100)
 
-        hostname = socket.gethostname()
-        ip = socket.gethostbyname(hostname)
+        ip = get_local_ip()
 
         print(f"🚀 SSH server running!")
-        print(f"🖥️ Hostname/IP: {ip}")
+        print(f"🖥 Hostname/IP: {ip}")
         print(f"👤 Username: {username}")
         print(f"🔐 Password: {password}")
         print(f"📡 Port: {port}")
-        print("🛠️ You can now connect to this device using the GUI from another computer.")
+        print("🛠 You can now connect to this device using the GUI from another computer.")
         log(f"🚀 SSH server started on {ip}:{port}")
         log(f"👤 Username: {username}")
         log(f"🔐 Password: {password}")
-        log("🛠️ Ready to accept connections from other devices.")
-
+        log("🛠 Ready to accept connections from other devices.")
 
         def handle_client(client_socket):
             transport = paramiko.Transport(client_socket)
@@ -216,12 +219,7 @@ def start_ssh_server():
                 channel = transport.accept(20)
                 if channel is None:
                     return
-
-                # Send welcome message
-                channel.send(channel.send("\n✅ Connected to IoT SSH Server!\nType something and press Enter:\n".encode())
-)
-
-                # Keep the channel open and echo messages
+                channel.send("\n✅ Connected to IoT SSH Server!\nType something and press Enter:\n".encode())
                 while True:
                     data = channel.recv(1024)
                     if not data:
@@ -229,13 +227,11 @@ def start_ssh_server():
                     message = data.decode().strip()
                     response = f"Echo: {message}\n"
                     channel.send(response.encode())
-
                 channel.close()
             except Exception as e:
-                print(f"⚠️ SSH server error: {e}")
+                print(f"⚠ SSH server error: {e}")
             finally:
                 transport.close()
-
 
         def server_loop():
             while True:
@@ -247,7 +243,5 @@ def start_ssh_server():
     except Exception as e:
         print(f"❌ Failed to start SSH server: {e}")
 
-# Start the SSH server in background
 start_ssh_server()
-
 root.mainloop()
