@@ -2,7 +2,7 @@
 
 A secure peer-to-peer file and clipboard sharing system using **ECDH key exchange** and **AES encryption**. Built with a Python GUI (Tkinter) and powered by Flask for encrypted HTTP transfers — perfect for lightweight, private communication between IoT or personal devices over a secure network.
 
-![SecureShare Banner](https://github.com/mohdabdullah0312/SecureShare/utils/SecureShare.png)
+![SecureShare Banner](https://github.com/mohdabdullah0312/SecureShare/blob/main/utils/SecureShare.png)
 
 ---
 
