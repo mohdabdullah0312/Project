@@ -6,7 +6,7 @@ from ecdsa.ellipticcurve import Point
 
 #the main window opens here
 root = tk.Tk()
-root.title("Diffie-Hellman")
+root.title("Elliptic-Curve Diffie-Hellman Key Exchange")
 root.geometry('350x150')
 
 lbl_1= tk.Label(root, text="\nClick the button to start!", font= ("Arial",17))
@@ -20,14 +20,14 @@ def start_algo():
     #destroyed main window to open individual screens
     root.destroy()
 
-    #A's screen generation
+    #user's screen generation
     result_a=tk.Tk()
-    result_a.title("A's Screen")
+    result_a.title("Key Exchange")
     result_a.geometry('1200x600')
 
-    #randomly generating A's private key(a) using the eliptic curve and showing
+    #randomly generating user's private key(a) using the eliptic curve and showing
     a=SigningKey.generate(curve=SECP256k1)
-    lbl_2=tk.Label(result_a, text="\nPrivate Key is selected for A", font=('Arial',15))
+    lbl_2=tk.Label(result_a, text="\nPrivate Key is selected for you", font=('Arial',15))
     lbl_2.pack()
 
     lbl_6=tk.Label(result_a, text=''+str(a.to_string().hex()), font=('Arial',15))
@@ -42,11 +42,11 @@ def start_algo():
     toggle_btn_1 = tk.Button(result_a, text="Toggle Show", bd=5 , command=toggle_lbl_6)
     toggle_btn_1.pack()
 
-    #calculating public key for A then showing 
+    #calculating public key for user then showing 
     pa=a.get_verifying_key()
     pa_kp= pa.pubkey.point
 
-    lbl_3=tk.Label(result_a, text="\nPublic key is formed by A's private key", font=('Arial',15))
+    lbl_3=tk.Label(result_a, text="\nPublic key is formed by your private key", font=('Arial',15))
     lbl_3.pack()
 
     frame_x1 = tk.Frame(result_a)
@@ -77,7 +77,7 @@ def start_algo():
     cp_btn_2 = tk.Button(frame_y1, text="Copy", bd=5, command=cp_bt2)
     cp_btn_2.pack(side="left", padx=5)
 
-    lbl_4=tk.Label(result_a, text="\nEnter the public key received from B", font=('Arial',15))
+    lbl_4=tk.Label(result_a, text="\nEnter the public key received from other party", font=('Arial',15))
     lbl_4.pack()
 
     frame_x2 = tk.Frame(result_a)

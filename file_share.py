@@ -115,7 +115,7 @@ def log(message):
 
 # GUI Setup
 root = tk.Tk()
-root.title("IoT SSH File Manager")
+root.title("SSH File Sharing Utility")
 root.geometry("500x500")
 root.configure(bg="#f0f0f0")
 

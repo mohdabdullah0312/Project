@@ -10,7 +10,6 @@ else:
 
 req_file = os.path.join(base_path, "requirements.txt")
 
-# Modify only this line to use the correct path
 sy(f"pip install -r \"{req_file}\"") if os.path.exists(req_file) else print("Error: requirements.txt not found!")
 
 def install_requirements():

@@ -45,7 +45,7 @@ def encrypt1():
 
         filename = fd.askopenfilename(
             title="Open the file",
-            initialdir='D:\\Coding\\Python',
+            initialdir='C:\\',
             filetypes=filetypes)
 
         global fileloc_enc
@@ -114,7 +114,7 @@ def decrypt1():
 
         filename = fd.askopenfilename(
             title="Open the file",
-            initialdir='D:\\Coding\\Python',
+            initialdir='C:\\',
             filetypes=filetypes)
 
         global fileloc_dec
@@ -151,18 +151,11 @@ def decrypt1():
     btn_dec = tk.Button(dec1, text='Open the File', command=select_file_dec)
     btn_dec.pack()  # Show the button
 
-
-
-    
-
     def go_back():
         dec1.destroy()
         root.deiconify()
 
-    
     tk.Button(dec1, text="Back", command=go_back).pack(side='bottom', padx=5, pady=5)
-
-
 
 # Frame for entering key
 frame_key = tk.Frame(root)
@@ -178,7 +171,6 @@ def get_key(key):
     #Convert user input into a 32-byte AES key using SHA-256
     hasher = SHA256.new(key.encode('utf-8'))
     return hasher.digest()  # Returns 32 bytes
-
 
 # Buttons for encryption and decryption
 btn1 = tk.Button(root, text='Encrypt a File', bd='3', font=('Arial'), command=encrypt1)
