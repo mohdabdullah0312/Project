@@ -1,5 +1,3 @@
-# securefilemanager.spec
-
 import os
 from PyInstaller.utils.hooks import collect_submodules
 from PyInstaller.building.build_main import Analysis, PYZ, EXE, COLLECT
@@ -33,7 +31,7 @@ exe = EXE(
     a.binaries,
     a.zipfiles,
     a.datas,
-    name="SecureFileManager.bin",
+    name="SecureShare.bin",
     debug=False,
     console=True  # Set to False if GUI app
 )
@@ -45,5 +43,5 @@ coll = COLLECT(
     datas=a.datas,
     strip=True,
     upx=True, 
-    name="SecureFileManager"
+    name="SecureShare"
 )

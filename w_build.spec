@@ -1,5 +1,3 @@
-# securefilemanager_windows_console.spec
-
 import os
 from PyInstaller.utils.hooks import collect_submodules
 from PyInstaller.building.build_main import Analysis, PYZ, EXE, COLLECT
@@ -30,7 +28,7 @@ exe = EXE(
     a.binaries,
     a.zipfiles,
     a.datas,
-    name="SecureFileManager",
+    name="SecureShare",
     debug=False,
     console=True,              
     icon="icon.ico"        
@@ -43,5 +41,5 @@ coll = COLLECT(
     datas=a.datas,
     strip=True,
     upx=True,
-    name="SecureFileManager"
+    name="SecureShare"
 )
