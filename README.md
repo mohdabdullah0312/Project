@@ -79,7 +79,7 @@ python main.py --cli
 - Select **Clipboard** or **File** mode in the GUI.
 - Ensure both devices are running the app and connected over the same network.
 - Exchange public keys (done automatically).
-- Sender encrypts → Flask HTTP transfer → Receiver decrypts.
+- Sender encrypts → Paramiko SSH server transfer → Receiver decrypts.
 
 ---
 
