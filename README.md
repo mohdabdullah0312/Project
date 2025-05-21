@@ -12,7 +12,7 @@ A secure peer-to-peer file and clipboard sharing system using **ECDH key exchang
 - 🔒 **AES Encryption** for data confidentiality
 - 🖥️ **Tkinter GUI / CLI** for user-friendly interaction
 - 🔁 **Clipboard & File Sharing** across devices
-- 🌐 **Flask Server** for simple encrypted HTTP data transfer
+- 🌐 **SSH Server** for simple encrypted SSH data transfer
 - ⚡ **Fast & Lightweight**, suitable for IoT devices
 - 🔁 **Two-way Key Exchange** with symmetric key derivation
 
@@ -27,12 +27,12 @@ A secure peer-to-peer file and clipboard sharing system using **ECDH key exchang
 |                |             |                |
 | GUI/CLI (Tkinter)           GUI/CLI (Tkinter) |
 |                |             |                |
-| Generate ECDH  |<-- Public -->| Generate ECDH  |
+| Generate ECDH  |<-- Public -->| Generate ECDH |
 |  Key Pair      |             |  Key Pair      |
 |                |             |                |
 | AES Encrypt    |             | AES Decrypt    |
 | File/Clipboard |             | File/Clipboard |
-| Send via Flask | --> HTTP -->| Receive Flask  |
+| Send via SSH   | --> SSH --> | Receive SSH    |
 +----------------+             +----------------+
 ```
 
@@ -87,7 +87,7 @@ python main.py --cli
 
 - **Python 3**
 - **Tkinter** – GUI Interface
-- **Flask** – Local HTTP Server
+- **SSH** – Local SSH Server
 - **ECDSA** – ECDH Key Generation
 - **PyCryptodome** – AES Encryption/Decryption
 
@@ -99,7 +99,7 @@ python main.py --cli
 SecureShare/
 │
 ├── main.py                 # Entry point (GUI/CLI)
-├── file_share.py         # Flask server handler
+├── file_share.py           # SSH server handler
 ├── encryption_utils.py     # ECDH & AES logic
 ├── requirements_installer.py
 ├── utils/                  # Shared utilities
@@ -124,7 +124,7 @@ To test file transfer:
 
 - ECDH ensures **ephemeral, symmetric key** generation per session.
 - AES-256 encryption guarantees **confidentiality** of transferred data.
-- Flask is bound to local or private IP (use Tailscale or VPN for secure remote access).
+- SSH is bound to local or private IP (on the same wifi for currently for prototype usage).
 
 ---
 
@@ -161,7 +161,7 @@ MIT License © [Muhammad Abdullah Asim](https://github.com/mohdabdullah0312)
 - [PyCryptodome](https://www.pycryptodome.org/)
 - [ECDSA Python Library](https://github.com/warner/python-ecdsa)
 - [Tkinter](https://docs.python.org/3/library/tkinter.html)
-- [Flask](https://flask.palletsprojects.com/)
+- [SSH (paramiko)](https://www.paramiko.org/)
 
 ---
 
